@@ -7,9 +7,7 @@ interface ProductFormProps {
     onCancel: () => void;
 }
 
-const CATEGORIES = ['electronics', 'jewelery', "men's clothing", "women's clothing"];
-
-export const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit, onCancel }) => {
+export const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit, }) => {
     const [formData, setFormData] = useState({
         title: '',
         price: 0,
@@ -33,14 +31,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({ product, onSubmit, onC
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         onSubmit(formData);
-    };
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: name === 'price' ? parseFloat(value) || 0 : value
-        }));
     };
 
     return (

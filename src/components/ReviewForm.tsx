@@ -10,12 +10,12 @@ interface ReviewFormProps {
 }
 
 export const ReviewForm: React.FC<ReviewFormProps> = ({
-    productId,
+
     onSubmit,
     onCancel,
     editReview,
 }) => {
-    const { isAuthenticated, user } = useAuthContext();
+    const { isAuthenticated, } = useAuthContext();
     const [rating, setRating] = useState(editReview?.rating || 0);
     const [comment, setComment] = useState(editReview?.comment || '');
     const [isSubmitting, setIsSubmitting] = useState(false);

@@ -9,7 +9,6 @@ import { StarRating } from '../components/StarRating';
 import { ReviewForm } from '../components/ReviewForm';
 import { ReviewList } from '../components/ReviewList';
 import { type Review } from '../contexts/ReviewContext';
-import { Loading } from '../components/Loading';
 
 export const ProductDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();

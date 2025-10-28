@@ -49,7 +49,7 @@ export const WishlistButton: React.FC<WishlistButtonProps> = ({
             {isWishlisted ? (
                 <>
                     <svg
-                        className="flex-shrink-0"
+                        // className="flex-shrink-0"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                     >
@@ -68,7 +68,7 @@ export const WishlistButton: React.FC<WishlistButtonProps> = ({
             ) : (
                 <>
                     <svg
-                        className="flex-shrink-0"
+                        // className="flex-shrink-0"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"

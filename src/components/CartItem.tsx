@@ -17,7 +17,7 @@ export const CartItem: React.FC<CartItemProps> = ({ item }) => {
 
     return (
         <li className="py-6 flex">
-            <div className="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden">
+            <div className=" w-24 h-24 border border-gray-200 rounded-md overflow-hidden">
                 <img
                     src={item.product.image}
                     alt={item.product.title}

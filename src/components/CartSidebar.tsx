@@ -8,7 +8,6 @@ export const CartSidebar: React.FC = () => {
         cartItems,
         isCartOpen,
         closeCart,
-        totalItems,
         totalPrice,
         clearCart,
     } = useCart();
