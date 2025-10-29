@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { type Product } from '../contexts/ProductContext';
 import { useWishlist } from '../hooks/useWishlist';
 import { useCart } from '../hooks/useCart';
-import { ProductCard } from './ProductCard';
+import { EnhancedProductCard as ProductCard } from './EnhancedProductCard';
 
 export const WishlistPage: React.FC = () => {
     const { wishlistItems, clearWishlist, removeFromWishlist } = useWishlist();

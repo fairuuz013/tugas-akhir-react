@@ -48,7 +48,7 @@ export const ReviewList: React.FC<ReviewListProps> = ({
 
                     {/* Average Rating */}
                     <div className="flex items-center space-x-4 mb-4">
-                        <div className="text-4xl font-bold text-gray-900">{averageRating}</div>
+                        <div className="text-4xl font-bold text-gray-900">{averageRating.toFixed(1)}</div>
                         <div className="space-y-1">
                             <StarRating rating={averageRating} size="lg" readonly showLabel />
                             <p className="text-sm text-gray-600">{totalReviews} reviews</p>
@@ -59,7 +59,7 @@ export const ReviewList: React.FC<ReviewListProps> = ({
                     <div className="space-y-2 max-w-xs">
                         {[5, 4, 3, 2, 1].map((rating) => (
                             <div key={rating} className="flex items-center space-x-2">
-                                <span className="text-sm text-gray-600 w-8">{rating} star</span>
+                                <span className="text-sm text-gray-600 w-8">{rating} bintang</span>
                                 <div className="flex-1 bg-gray-200 rounded-full h-2">
                                     <div
                                         className="bg-yellow-400 h-2 rounded-full"
@@ -77,17 +77,17 @@ export const ReviewList: React.FC<ReviewListProps> = ({
                 {/* Sort Controls */}
                 <div className="mt-4 lg:mt-0">
                     <label htmlFor="sort" className="block text-sm font-medium text-gray-700 mb-2">
-                        Sort by
+                        Urutkan
                     </label>
                     <select
                         id="sort"
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value as any)}
-                        className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                        <option value="newest">Newest First</option>
-                        <option value="highest">Highest Rated</option>
-                        <option value="lowest">Lowest Rated</option>
+                        <option value="newest">Terbaru</option>
+                        <option value="highest">Rating Tertinggi</option>
+                        <option value="lowest">Rating Terendah</option>
                     </select>
                 </div>
             </div>
@@ -105,19 +105,10 @@ export const ReviewList: React.FC<ReviewListProps> = ({
                     ))
                 ) : (
                     <div className="text-center py-8 bg-gray-50 rounded-lg">
-                        <p className="text-gray-600">No reviews yet. Be the first to review this product!</p>
+                        <p className="text-gray-600">Belum ada review. Jadilah yang pertama mereview produk ini!</p>
                     </div>
                 )}
             </div>
-
-            {/* Load More (Future Feature) */}
-            {sortedReviews.length > 5 && (
-                <div className="text-center">
-                    <button className="bg-white border border-gray-300 text-gray-700 px-6 py-2 rounded-md hover:bg-gray-50 transition-colors">
-                        Load More Reviews
-                    </button>
-                </div>
-            )}
         </div>
     );
 };

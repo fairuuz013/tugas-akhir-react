@@ -1,186 +1,154 @@
-import React, { createContext, useContext, useReducer, type ReactNode } from 'react';
-import { type Product } from './ProductContext';
+import React, { createContext, useState, useContext, useEffect } from 'react';
+
+export interface Product {
+    id: number;
+    title: string;
+    price: number;
+    description: string;
+    category: string;
+    image: string;
+    rating: {
+        rate: number;
+        count: number;
+    };
+}
 
 export interface CartItem {
-    product: Product;
+    id: number;
+    name: string;
+    price: number; // Price dalam IDR (Rupiah)
     quantity: number;
+    image: string;
 }
-
-interface CartState {
-    items: CartItem[];
-    isOpen: boolean;
-}
-
-type CartAction =
-    | { type: 'ADD_TO_CART'; payload: Product }
-    | { type: 'REMOVE_FROM_CART'; payload: number }
-    | { type: 'UPDATE_QUANTITY'; payload: { id: number; quantity: number } }
-    | { type: 'CLEAR_CART' }
-    | { type: 'TOGGLE_CART' }
-    | { type: 'OPEN_CART' }
-    | { type: 'CLOSE_CART' };
 
 interface CartContextType {
-    state: CartState;
+    cartItems: CartItem[];
     addToCart: (product: Product) => void;
     removeFromCart: (productId: number) => void;
     updateQuantity: (productId: number, quantity: number) => void;
     clearCart: () => void;
-    toggleCart: () => void;
+    total: number; // Total dalam IDR (Rupiah)
+    totalItems: number;
+    isCartOpen: boolean;
     openCart: () => void;
     closeCart: () => void;
-    getTotalItems: () => number;
-    getTotalPrice: () => number;
+    toggleCart: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-const cartReducer = (state: CartState, action: CartAction): CartState => {
-    switch (action.type) {
-        case 'ADD_TO_CART':
-            const existingItem = state.items.find(
-                item => item.product.id === action.payload.id
-            );
-
-            if (existingItem) {
-                return {
-                    ...state,
-                    items: state.items.map(item =>
-                        item.product.id === action.payload.id
-                            ? { ...item, quantity: item.quantity + 1 }
-                            : item
-                    ),
-                };
-            }
-
-            return {
-                ...state,
-                items: [...state.items, { product: action.payload, quantity: 1 }],
-            };
-
-        case 'REMOVE_FROM_CART':
-            return {
-                ...state,
-                items: state.items.filter(item => item.product.id !== action.payload),
-            };
-
-        case 'UPDATE_QUANTITY':
-            if (action.payload.quantity === 0) {
-                return {
-                    ...state,
-                    items: state.items.filter(item => item.product.id !== action.payload.id),
-                };
-            }
-
-            return {
-                ...state,
-                items: state.items.map(item =>
-                    item.product.id === action.payload.id
-                        ? { ...item, quantity: action.payload.quantity }
-                        : item
-                ),
-            };
-
-        case 'CLEAR_CART':
-            return {
-                ...state,
-                items: [],
-            };
-
-        case 'TOGGLE_CART':
-            return {
-                ...state,
-                isOpen: !state.isOpen,
-            };
-
-        case 'OPEN_CART':
-            return {
-                ...state,
-                isOpen: true,
-            };
-
-        case 'CLOSE_CART':
-            return {
-                ...state,
-                isOpen: false,
-            };
-
-        default:
-            return state;
-    }
+// Helper function untuk konversi USD ke IDR (1 USD = 16,000 IDR)
+const usdToIdr = (usdPrice: number): number => {
+    return usdPrice * 16000;
 };
 
-const initialState: CartState = {
-    items: [],
-    isOpen: false,
-};
+export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const [cartItems, setCartItems] = useState<CartItem[]>([]);
+    const [isCartOpen, setIsCartOpen] = useState(false);
 
-export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [state, dispatch] = useReducer(cartReducer, initialState);
+    useEffect(() => {
+        const savedCart = localStorage.getItem('cart');
+        if (savedCart) {
+            try {
+                const parsedCart = JSON.parse(savedCart);
+                // Validasi data cart yang disimpan
+                const validatedCart = parsedCart.map((item: any) => ({
+                    id: item.id || 0,
+                    name: item.name || 'Unknown Product',
+                    price: item.price || 0,
+                    quantity: item.quantity || 1,
+                    image: item.image || 'https://via.placeholder.com/100x100?text=No+Image'
+                }));
+                setCartItems(validatedCart);
+            } catch (error) {
+                console.error('Error parsing cart data:', error);
+                localStorage.removeItem('cart');
+            }
+        }
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem('cart', JSON.stringify(cartItems));
+    }, [cartItems]);
 
     const addToCart = (product: Product) => {
-        dispatch({ type: 'ADD_TO_CART', payload: product });
+        setCartItems(prev => {
+            const existingItem = prev.find(item => item.id === product.id);
+            if (existingItem) {
+                return prev.map(item =>
+                    item.id === product.id
+                        ? {
+                            ...item,
+                            quantity: item.quantity + 1,
+                            price: usdToIdr(product.price) || 0 // KONVERSI KE IDR
+                        }
+                        : item
+                );
+            }
+            return [...prev, {
+                id: product.id,
+                name: product.title || 'Unknown Product',
+                price: usdToIdr(product.price) || 0, // KONVERSI KE IDR
+                quantity: 1,
+                image: product.image || 'https://via.placeholder.com/100x100?text=No+Image'
+            }];
+        });
     };
 
     const removeFromCart = (productId: number) => {
-        dispatch({ type: 'REMOVE_FROM_CART', payload: productId });
+        setCartItems(prev => prev.filter(item => item.id !== productId));
     };
 
     const updateQuantity = (productId: number, quantity: number) => {
-        dispatch({ type: 'UPDATE_QUANTITY', payload: { id: productId, quantity } });
-    };
-
-    const clearCart = () => {
-        dispatch({ type: 'CLEAR_CART' });
-    };
-
-    const toggleCart = () => {
-        dispatch({ type: 'TOGGLE_CART' });
-    };
-
-    const openCart = () => {
-        dispatch({ type: 'OPEN_CART' });
-    };
-
-    const closeCart = () => {
-        dispatch({ type: 'CLOSE_CART' });
-    };
-
-    const getTotalItems = () => {
-        return state.items.reduce((total, item) => total + item.quantity, 0);
-    };
-
-    const getTotalPrice = () => {
-        return state.items.reduce(
-            (total, item) => total + item.product.price * item.quantity,
-            0
+        if (quantity <= 0) {
+            removeFromCart(productId);
+            return;
+        }
+        setCartItems(prev =>
+            prev.map(item =>
+                item.id === productId ? { ...item, quantity } : item
+            )
         );
     };
 
+    const clearCart = () => {
+        setCartItems([]);
+        localStorage.removeItem('cart');
+    };
+
+    const total = cartItems.reduce((sum, item) => {
+        const price = item.price || 0;
+        const quantity = item.quantity || 1;
+        return sum + (price * quantity);
+    }, 0);
+
+    const totalItems = cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0);
+
+    const openCart = () => setIsCartOpen(true);
+    const closeCart = () => setIsCartOpen(false);
+    const toggleCart = () => setIsCartOpen(prev => !prev);
+
     const value: CartContextType = {
-        state,
+        cartItems,
         addToCart,
         removeFromCart,
         updateQuantity,
         clearCart,
-        toggleCart,
+        total,
+        totalItems,
+        isCartOpen,
         openCart,
         closeCart,
-        getTotalItems,
-        getTotalPrice,
+        toggleCart
     };
 
-    return (
-        <CartContext.Provider value={value}>
-            {children}
-        </CartContext.Provider>
-    );
+    return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };
 
-export const useCartContext = () => {
+export const useCart = () => {
     const context = useContext(CartContext);
     if (context === undefined) {
-        throw new Error('useCartContext must be used within a CartProvider');
+        throw new Error('useCart must be used within a CartProvider');
     }
     return context;
-};
+};  

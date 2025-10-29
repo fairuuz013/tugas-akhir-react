@@ -10,7 +10,6 @@ interface ReviewFormProps {
 }
 
 export const ReviewForm: React.FC<ReviewFormProps> = ({
-
     onSubmit,
     onCancel,
     editReview,
@@ -24,17 +23,17 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({
         e.preventDefault();
 
         if (!isAuthenticated) {
-            alert('Please login to submit a review');
+            alert('Silakan login untuk menulis review');
             return;
         }
 
         if (rating === 0) {
-            alert('Please select a rating');
+            alert('Silakan beri rating');
             return;
         }
 
         if (comment.trim().length < 10) {
-            alert('Please write a review with at least 10 characters');
+            alert('Review harus minimal 10 karakter');
             return;
         }
 
@@ -55,10 +54,10 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({
         return (
             <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
                 <h3 className="text-lg font-medium text-yellow-800 mb-2">
-                    Sign in to leave a review
+                    Login untuk menulis review
                 </h3>
                 <p className="text-yellow-700">
-                    Please login to share your experience with this product.
+                    Silakan login untuk berbagi pengalaman Anda dengan produk ini.
                 </p>
             </div>
         );
@@ -67,13 +66,13 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({
     return (
         <div className="bg-white rounded-lg border border-gray-200 p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                {editReview ? 'Edit Your Review' : 'Write a Review'}
+                {editReview ? 'Edit Review Anda' : 'Tulis Review'}
             </h3>
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Your Rating *
+                        Rating Anda *
                     </label>
                     <StarRating
                         rating={rating}
@@ -85,20 +84,20 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({
 
                 <div>
                     <label htmlFor="comment" className="block text-sm font-medium text-gray-700 mb-2">
-                        Your Review *
+                        Review Anda *
                     </label>
                     <textarea
                         id="comment"
                         rows={4}
                         value={comment}
                         onChange={(e) => setComment(e.target.value)}
-                        placeholder="Share your experience with this product... (minimum 10 characters)"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Bagikan pengalaman Anda dengan produk ini... (minimal 10 karakter)"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         required
                         minLength={10}
                     />
                     <p className="mt-1 text-sm text-gray-500">
-                        {comment.length}/10 characters minimum
+                        {comment.length}/10 karakter minimum
                     </p>
                 </div>
 
@@ -106,18 +105,18 @@ export const ReviewForm: React.FC<ReviewFormProps> = ({
                     <button
                         type="submit"
                         disabled={isSubmitting || rating === 0 || comment.trim().length < 10}
-                        className="bg-blue-500 text-white px-6 py-2 rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
-                        {isSubmitting ? 'Submitting...' : editReview ? 'Update Review' : 'Submit Review'}
+                        {isSubmitting ? 'Mengirim...' : editReview ? 'Update Review' : 'Kirim Review'}
                     </button>
 
                     {onCancel && (
                         <button
                             type="button"
                             onClick={onCancel}
-                            className="bg-gray-200 text-gray-700 px-6 py-2 rounded-md hover:bg-gray-300 transition-colors"
+                            className="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-medium hover:bg-gray-300 transition-colors"
                         >
-                            Cancel
+                            Batal
                         </button>
                     )}
                 </div>

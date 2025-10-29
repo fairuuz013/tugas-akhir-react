@@ -1,7 +1,6 @@
 import { useState, useMemo, useCallback } from 'react';
 import { type Product } from '../contexts/ProductContext';
 
-// ✅ Tambahin ini biar error SortOption ilang
 export type SortOption = 'price-asc' | 'price-desc' | 'rating' | 'name';
 
 export interface SearchFilters {
@@ -24,11 +23,6 @@ export const useSearch = (products: Product[]) => {
     });
 
     const [sortBy, setSortBy] = useState<SortOption>('price-asc');
-
-    // Debounced search
-    const debouncedSearch = useCallback((value: string) => {
-        setFilters(prev => ({ ...prev, query: value }));
-    }, []);
 
     const updateFilters = useCallback((newFilters: Partial<SearchFilters>) => {
         setFilters(prev => ({ ...prev, ...newFilters }));
@@ -115,7 +109,6 @@ export const useSearch = (products: Product[]) => {
         priceRange,
         updateFilters,
         setSortBy,
-        debouncedSearch,
         clearFilters,
     };
 };

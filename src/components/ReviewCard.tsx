@@ -14,10 +14,12 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({ review, onEdit, onDelete
     const [isExpanded, setIsExpanded] = useState(false);
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-    const isOwnReview = user?.username === review.userName;
+    // Gunakan username atau name untuk komparasi
+    const currentUserName = user?.username || user?.name;
+    const isOwnReview = currentUserName === review.userName;
 
     const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('en-US', {
+        return new Date(dateString).toLocaleDateString('id-ID', {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
@@ -68,7 +70,7 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({ review, onEdit, onDelete
                         {onEdit && (
                             <button
                                 onClick={() => onEdit(review)}
-                                className="text-blue-600 hover:text-blue-800 text-sm"
+                                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
                             >
                                 Edit
                             </button>
@@ -77,28 +79,28 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({ review, onEdit, onDelete
                             <>
                                 <button
                                     onClick={() => setShowDeleteConfirm(true)}
-                                    className="text-red-600 hover:text-red-800 text-sm"
+                                    className="text-red-600 hover:text-red-800 text-sm font-medium"
                                 >
-                                    Delete
+                                    Hapus
                                 </button>
 
                                 {showDeleteConfirm && (
                                     <div className="absolute bg-white border border-gray-200 rounded-lg p-4 shadow-lg z-10">
                                         <p className="text-sm text-gray-700 mb-3">
-                                            Are you sure you want to delete this review?
+                                            Yakin ingin menghapus review ini?
                                         </p>
                                         <div className="flex space-x-2">
                                             <button
                                                 onClick={handleDelete}
                                                 className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
                                             >
-                                                Yes, Delete
+                                                Ya, Hapus
                                             </button>
                                             <button
                                                 onClick={() => setShowDeleteConfirm(false)}
                                                 className="bg-gray-200 text-gray-700 px-3 py-1 rounded text-sm hover:bg-gray-300"
                                             >
-                                                Cancel
+                                                Batal
                                             </button>
                                         </div>
                                     </div>
@@ -116,21 +118,11 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({ review, onEdit, onDelete
                 {shouldTruncate && (
                     <button
                         onClick={() => setIsExpanded(!isExpanded)}
-                        className="text-blue-600 hover:text-blue-800 text-sm mt-2"
+                        className="text-blue-600 hover:text-blue-800 text-sm mt-2 font-medium"
                     >
-                        {isExpanded ? 'Show less' : 'Read more'}
+                        {isExpanded ? 'Tutup' : 'Baca selengkapnya'}
                     </button>
                 )}
-            </div>
-
-            {/* Helpful Votes (Future Feature) */}
-            <div className="mt-4 pt-4 border-t border-gray-100">
-                <button className="text-sm text-gray-500 hover:text-gray-700 flex items-center space-x-1">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905a3.61 3.61 0 01-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
-                    </svg>
-                    <span>Helpful (0)</span>
-                </button>
             </div>
         </div>
     );
